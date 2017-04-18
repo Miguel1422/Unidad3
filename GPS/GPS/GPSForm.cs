@@ -30,7 +30,7 @@ namespace GPS.GPS
         public GPSForm()
         {
             InitializeComponent();
-            mapC = Image.FromFile(Parser.IMG);
+            mapC = Image.FromFile(Parser.IMG_MAP);
             ciudad = new Dictionary<string, City>();
             p = new Parser();
             kd = new KdTree();

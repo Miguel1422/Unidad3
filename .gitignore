@@ -252,12 +252,12 @@ paket-files/
 *.sln.iml
 
 #Debug
-Aeropuerto/bin/
-/Aeropuerto/bin/
-/Aeropuerto/bin/*
-Aeropuerto/bin/*
+GPS/bin/
+/GPS/bin/
+/GPS/bin/*
+GPS/bin/*
 
-Aeropuerto/obj/
-/Aeropuerto/obj/
-/Aeropuerto/obj/*
-Aeropuerto/obj/*
+GPS/obj/
+/GPS/obj/
+/GPS/obj/*
+GPS/obj/*

@@ -12,11 +12,11 @@ namespace GPS.GPS.Util
     public class Parser
     {
         public static string FILE_DIRECTORY = @"./Data/";
-        public static string GRAFO = FILE_DIRECTORY + "Grafo2.txt";
+        public static string GRAFO = FILE_DIRECTORY + "Grafo.txt";
         public static string CIUDADES = FILE_DIRECTORY + "Ciudades.txt";
-        public static string CARRETERAS = FILE_DIRECTORY + "Carreteras2.txt";
+        public static string CARRETERAS = FILE_DIRECTORY + "Carreteras.txt";
         public static string NODOS = FILE_DIRECTORY + "Nodes2.txt";
-        public static string IMG = FILE_DIRECTORY + "asd2.png";
+        public static string IMG_MAP = FILE_DIRECTORY + "asd2.png";
         private List<Node> nodes;
         private List<City> ciudades;
         private List<Way> ways;
