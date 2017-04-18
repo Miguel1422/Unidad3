@@ -31,7 +31,6 @@ namespace Unidad3
         private void gPSToolStripMenuItem_Click(object sender, EventArgs e)
         {
             GPSForm a = new GPSForm();
-
             a.MdiParent = this;
             a.Show();
         }
