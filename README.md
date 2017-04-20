@@ -9,16 +9,26 @@ Arbol-Viajero-GPS
 
 4.- Esos nuevos archivos transferirlos a la carpeta del proyecto principal y quitar el "2" del nombre
 
+
+
 Formato de los archivos
 
+
 Carreteras formato
+
 id de la carretera|Id de nodos ...|Nombre de la carretera
 
+
 Ciudades formato
+
 id de la ciudad|latitud| longitud| Nombre de la ciudad
 
+
 Grafo formato
+
 id nodo| Nodos adyacentes...
 
+
 nodes formato
+
 id del nodo|latitud| longitud
