@@ -31,6 +31,8 @@ namespace Unidad3.GPS
         private Image mapC;
         private Node from;
         private Node to;
+        private string fromS;
+        private string toS;
         private double mapX;
         private double mapY;
         private double minX;
@@ -115,6 +117,8 @@ namespace Unidad3.GPS
             DateTime a = DateTime.Now;
             from = n1;
             to = n2;
+            fromS = c1;
+            toS = c2;
             dijk = GeneratePath(n1, n2);
             path = GetPath(dijk, n2);
             Console.WriteLine("Distancia " + graph.DistanceTo(dijk, n2));
@@ -213,15 +217,16 @@ namespace Unidad3.GPS
             {
                 float x1 = (float)map(minX, maxX, 0, mapX, from.Longitude);
                 float y1 = (float)map(minY, maxY, 0, mapY, from.Latitude);
+
                 g.FillEllipse(Brushes.Green, x1 - tam / 2, (float)(mapY - y1 - tam / 2), tam, tam);
-                g.DrawString("Desde:", new Font("Arial", 12 * mult), Brushes.Black, x1, (float)(mapY - y1));
+                g.DrawString("Desde: " + fromS, new Font("Arial", 12 * mult), Brushes.Black, x1, (float)(mapY - y1));
             }
             if (to != null)
             {
                 float x1 = (float)map(minX, maxX, 0, mapX, to.Longitude);
                 float y1 = (float)map(minY, maxY, 0, mapY, to.Latitude);
                 g.FillEllipse(Brushes.Blue, x1 - tam / 2, (float)(mapY - y1 - tam / 2), tam, tam);
-                g.DrawString("Hacia:", new Font("Arial", 12 * mult), Brushes.Black, x1, (float)(mapY - y1));
+                g.DrawString("Hacia: " + toS, new Font("Arial", 12 * mult), Brushes.Black, x1, (float)(mapY - y1));
             }
         }
 
@@ -230,11 +235,11 @@ namespace Unidad3.GPS
             Graphics g = e.Graphics;
             g.TranslateTransform(dx * zoom, dy * zoom);
             g.ScaleTransform(zoom, zoom);
-            //g.DrawImage(mapC, 0, 0, (float)mapX, (float)mapY);
+            g.DrawImage(mapC, 0, 0, (float)mapX, (float)mapY);
             DrawPath(g);
             DrawDestination(g);
             //DrawCities(g);
-            DrawWays(g);
+            //DrawWays(g);
         }
 
         private void doubleBufferedPanel1_MouseClick(object sender, MouseEventArgs e)
@@ -251,6 +256,8 @@ namespace Unidad3.GPS
                 Point2D pp = kd.nearest(new Point2D(y1, x1));
                 Node n1 = pp.GetNode;
                 from = n1;
+                fromS = WaysByNode(n1);
+
                 if (to != null)
                 {
                     dijk = graph.GetDijkstra(from, to);
@@ -266,6 +273,7 @@ namespace Unidad3.GPS
                 Point2D pp = kd.nearest(new Point2D(y1, x1));
                 Node n2 = pp.GetNode;
                 to = n2;
+                toS = WaysByNode(n2);
                 if (from != null)
                 {
                     dijk = graph.GetDijkstra(from, to);
@@ -280,14 +288,18 @@ namespace Unidad3.GPS
 
         private void doubleBufferedPanel1_MouseDown(object sender, MouseEventArgs e)
         {
-            // if left button pressed
-            if (e.Button == MouseButtons.Left)
+
+            switch (e.Button)
             {
-                dragging = true;
-                xI = e.X;
-                yI = e.Y;
-                Cursor = Cursors.SizeAll;
+                case MouseButtons.Left:
+                    dragging = true;
+                    xI = e.X;
+                    yI = e.Y;
+                    Cursor = Cursors.SizeAll;
+                    break;
+                
             }
+
             base.OnMouseDown(e);
         }
 
@@ -356,18 +368,28 @@ namespace Unidad3.GPS
             string calle = null;
             foreach (Way w in pr)
             {
-                string s1 = w.Name;
+                string s1 = w.Name.Equals("null") ? w.ID + "" : w.Name;
                 foreach (Way w2 in ac)
                 {
-                    if (w2.Name.Equals(s1))
+                    string s2 = w2.Name.Equals("null") ? w2.ID + "" : w2.Name;
+                    if (s2.Equals(s1))
                     {
-                        calle = w2.Name;
+                        calle = s2;
                         return calle;
                     }
                 }
             }
 
             throw new Exception("No hay calles");
+        }
+        private string WaysByNode(Node n)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (Way w in waysByNode[n])
+            {
+                sb.Append(w.Name + ", ");
+            }
+            return sb.ToString();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -376,6 +398,7 @@ namespace Unidad3.GPS
             {
                 Node prev = from;
                 List<string> camino = new List<string>();
+                double totalDistance = 0;
                 //foreach (Edge item in path)
                 for (int i = 0; i < path.Count;)
                 {
@@ -385,35 +408,29 @@ namespace Unidad3.GPS
                     Node nue = (prev == a) ? b : a;
                     string calle = StreetBetween(prev, nue);
                     //Console.WriteLine(calle);
-
                     int k = i + 1;
-                    Node last = nue;
+                    double distance = 0;//parser.Distance(prev, last);
+                    distance += parser.Distance(prev, nue);
+                    Node ant = nue;
                     while (k < path.Count)
                     {
-                        Edge aux = path[k];
-                        Node aA = graph.GetVertex(aux.Either());
-                        Node bA = graph.GetVertex(aux.Other(aux.Either()));
-                        bool flag = false;
-                        bool flag2 = false;
-                        if (NodeContains(aA, calle))
+                        Edge siguiente = path[k];
+                        Node n1 = graph.GetVertex(siguiente.Either());
+                        Node n2 = graph.GetVertex(siguiente.Other(siguiente.Either()));
+
+                        Node nueAux = n1 == ant ? n2 : n1;
+
+                        if (NodeContains(nueAux, calle))
                         {
-                            last = aA;
-                            flag = true;
+                            distance += parser.Distance(ant, nueAux);
+                            ant = nueAux;
+                        }
+                        else
+                        {
+                            break;
                         }
 
-                        if (NodeContains(bA, calle))
-                        {
-                            last = bA;
-                            flag2 = true;
-                        }
-
-                        if (!flag || !flag2) break;
                         k++;
-                        if (k == path.Count)
-                        {
-                            last = (bA.Equals(to) ? bA : aA);
-                        }
-
                     }
                     i = k;
                     StringBuilder sb = new StringBuilder();
@@ -425,12 +442,14 @@ namespace Unidad3.GPS
                         sb.Append(w.Name + ", ");
                     }
                     //Console.WriteLine("\nContinue por{0} Hasta: ", calle);
-                    sb.AppendFormat("\nContinue por {0} Hasta: \n", calle);
-                    foreach (Way w in waysByNode[last])
+                    string dis = distance > 1000 ? String.Format("{0:0.00}Km", distance / 1000) : String.Format("{0:0.00}m", distance);
+                    sb.AppendFormat("\nContinue por {0} {1} Hasta: \n", calle, dis);
+                    sb.Append(WaysByNode(ant));
+                    /*foreach (Way w in waysByNode[last])
                     {
                         //Console.Write(w.Name + ", ");
                         sb.Append(w.Name + ", ");
-                    }
+                    }*/
                     //Console.WriteLine();
                     sb.Append("\n");
 
@@ -438,12 +457,26 @@ namespace Unidad3.GPS
                     //Console.WriteLine("************");
                     camino.Add(sb.ToString());
                     camino.Add("********************************");
-                    prev = last;
+                    prev = ant;
+                    totalDistance += distance;
+                }
+                double asd = graph.DistanceTo(dijk, to);
+                string disS = totalDistance > 1000 ? String.Format("{0:0.00}Km", totalDistance / 1000) : String.Format("{0:0.00}m", totalDistance);
+                camino.Add(String.Format("Ha llegado a su destino en {0}", disS));
+
+                if (Math.Abs(totalDistance - asd) > 1)
+                {
+                    Console.WriteLine("Error");
+                }
+                else
+                {
+                    Console.WriteLine("todo bien " + asd);
                 }
 
                 PathFrm p = new PathFrm(camino);
                 p.ShowDialog();
             }
         }
+
     }
 }

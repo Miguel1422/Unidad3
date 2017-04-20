@@ -9,7 +9,6 @@ namespace Unidad3.Ciudades
 {
     public class Road
     {
-        private Image i;
         private float x;
         private float y;
         private float x2;

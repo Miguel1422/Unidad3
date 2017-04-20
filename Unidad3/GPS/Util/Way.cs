@@ -26,7 +26,7 @@ namespace Unidad3.GPS.Util
 
         public string Name
         {
-            get { return name; }
+            get { return name.Equals("null") ? ID + "" : name; }
         }
 
 

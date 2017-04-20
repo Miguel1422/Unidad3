@@ -124,7 +124,7 @@ namespace Unidad3.GPS.Util
             return (n * Math.PI / 180);
         }
 
-        private double Distance(Node a, Node b)
+        public double Distance(Node a, Node b)
         {
             double ans = 0;
             double lat1 = ToRadians(a.Latitude);
