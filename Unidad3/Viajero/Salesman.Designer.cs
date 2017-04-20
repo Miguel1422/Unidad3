@@ -34,11 +34,15 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.button1 = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.button3 = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.doubleBufferedPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // doubleBufferedPanel1
             // 
+            this.doubleBufferedPanel1.Controls.Add(this.label1);
+            this.doubleBufferedPanel1.Controls.Add(this.button3);
             this.doubleBufferedPanel1.Controls.Add(this.button2);
             this.doubleBufferedPanel1.Controls.Add(this.checkBox1);
             this.doubleBufferedPanel1.Controls.Add(this.button1);
@@ -64,7 +68,7 @@
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(12, 12);
+            this.checkBox1.Location = new System.Drawing.Point(140, 9);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(113, 17);
             this.checkBox1.TabIndex = 1;
@@ -85,6 +89,25 @@
             // 
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(174, 35);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 3;
+            this.button3.Text = "Reiniciar";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 9);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(122, 13);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "Click para agrgar puntos";
             // 
             // Salesman
             // 
@@ -107,5 +130,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Label label1;
     }
 }
