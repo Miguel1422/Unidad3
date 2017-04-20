@@ -70,7 +70,6 @@ namespace Unidad3.GPS
             mapX = mapC.Width;
             mapY = mapC.Height;
 
-
             ciudad = new Dictionary<string, City>();
 
             kd = new KdTree();
@@ -94,7 +93,7 @@ namespace Unidad3.GPS
                 comboBox1.Items.Add(name);
                 comboBox2.Items.Add(name);
             }
-            
+
             foreach (Node item in graph.Vertices())
             {
                 kd.insert(new Point2D(item));
@@ -111,11 +110,13 @@ namespace Unidad3.GPS
             Dijkstra<Node> temp = graph.GetDijkstra(from, to);
             return temp;
         }
+
         private List<Edge> GetPath(Dijkstra<Node> dijkstra, Node to)
         {
             List<Edge> l = graph.Path(dijk, to);
             return l;
         }
+
         public static double map(double min, double max, double rMin, double rMax, double val)
         {
 
@@ -131,6 +132,7 @@ namespace Unidad3.GPS
 
             return res + rMin;
         }
+
         private bool NodeContains(Node n, string calle)
         {
             foreach (Way item in waysByNode[n])
@@ -142,6 +144,7 @@ namespace Unidad3.GPS
             }
             return false;
         }
+
         private string StreetBetween(Node a, Node b)
         {
             List<Way> pr = waysByNode[a];
@@ -163,6 +166,7 @@ namespace Unidad3.GPS
 
             throw new Exception("No hay calles");
         }
+
         private string WaysByNode(Node n)
         {
             StringBuilder sb = new StringBuilder();
@@ -172,6 +176,7 @@ namespace Unidad3.GPS
             }
             return sb.ToString();
         }
+
         private void DrawWays(Graphics g)
         {
             foreach (Way w in carreteras)
@@ -193,6 +198,7 @@ namespace Unidad3.GPS
 
             }
         }
+
         private void DrawPath(Graphics g)
         {
             Pen redPen = new Pen(Color.FromArgb(255, 255, 0, 0), 6);
@@ -210,6 +216,7 @@ namespace Unidad3.GPS
                 g.DrawLine(redPen, x1, (float)(mapY - y1), x2, (float)(mapY - y2));
             }
         }
+
         private void DrawCities(Graphics g)
         {
             foreach (City item in ciudades)
@@ -222,6 +229,7 @@ namespace Unidad3.GPS
             }
 
         }
+
         private void DrawDestination(Graphics g)
         {
             float mult = (float)map(0, 10, 2.5, 1, trackBar1.Value);
@@ -242,6 +250,7 @@ namespace Unidad3.GPS
                 g.DrawString("Hacia: " + toS, new Font("Arial", 12 * mult), Brushes.Black, x1, (float)(mapY - y1));
             }
         }
+
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -264,7 +273,7 @@ namespace Unidad3.GPS
                 path = GetPath(dijk, n2);
                 Console.WriteLine("Distancia " + graph.DistanceTo(dijk, n2));
                 Console.WriteLine("Tiempo " + (DateTime.Now - a));
-                
+
                 doubleBufferedPanel1.Invalidate();
             }
             catch (Exception)

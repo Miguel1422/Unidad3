@@ -20,6 +20,10 @@ namespace Unidad3.Viajero
         private int actu;
         private int[] ind;
         private int[] bestI;
+        private bool[] ap;
+        private List<int> gPoints;
+        private int gAct;
+
         public Salesman()
         {
             InitializeComponent();
@@ -334,10 +338,7 @@ namespace Unidad3.Viajero
 
 
         }
-
-        private bool[] ap;
-        private List<int> gPoints;
-        private int gAct;
+        
         private void button2_Click(object sender, EventArgs e)
         {
             timer1.Enabled = true;
