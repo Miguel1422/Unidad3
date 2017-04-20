@@ -96,7 +96,7 @@ namespace Unidad3.Graph
             return Adj(ids[v]);
         }
 
-        public Dijkstra<T> Path(T from, T to)
+        public Dijkstra<T> GetDijkstra(T from, T to)
         {
             Dijkstra<T> d = new Dijkstra<T>(this, names[from], names[to]);
             return d;
@@ -107,6 +107,10 @@ namespace Unidad3.Graph
             List<Edge> p = new List<Edge>();
 
             Stack<Edge> st = d.PathTo(names[to]);
+            if (st == null)
+            {
+                throw new Exception("No se puede encontrar una ruta");
+            }
 
             foreach (Edge item in st)
             {

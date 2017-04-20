@@ -48,6 +48,11 @@ namespace Unidad3.GPS.Util
             return id.GetHashCode();
         }
 
+        public override string ToString()
+        {
+            return name;
+        }
+
         public override bool Equals(Object obj)
         {
             if (obj == null || GetType() != obj.GetType()) return false;

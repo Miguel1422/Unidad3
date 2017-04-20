@@ -45,7 +45,6 @@ namespace Unidad3.Graph
         {
             get { return weight; }
         }
-
-
+        
     }
 }

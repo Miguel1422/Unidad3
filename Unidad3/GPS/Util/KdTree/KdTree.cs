@@ -25,11 +25,6 @@ namespace Unidad3.GPS.Util.KdTree
             {
                 return;
             }
-            if (node.p.GetNode == null)
-            {
-                int a = 3;
-            }
-            
             run(node.left);
             run(node.right);
             

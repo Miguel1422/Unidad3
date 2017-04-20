@@ -18,7 +18,7 @@ namespace Unidad3.GPS.Util
             this.position = position;
         }
 
-        public Node Position
+        public Node NodePosition
         {
             get { return position; }
 
@@ -46,7 +46,7 @@ namespace Unidad3.GPS.Util
         public override bool Equals(Object obj)
         {
             if (obj == null || GetType() != obj.GetType()) return false;
-            Node o = ((City)obj).Position;
+            Node o = ((City)obj).NodePosition;
             return position.ID == o.ID;
         }
     }

@@ -64,6 +64,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="GPS\PathFrm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GPS\PathFrm.Designer.cs">
+      <DependentUpon>PathFrm.cs</DependentUpon>
+    </Compile>
     <Compile Include="GPS\Util\City.cs" />
     <Compile Include="GPS\GPSForm.cs">
       <SubType>Form</SubType>
@@ -101,6 +107,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GPS\GPSForm.resx">
       <DependentUpon>GPSForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GPS\PathFrm.resx">
+      <DependentUpon>PathFrm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
