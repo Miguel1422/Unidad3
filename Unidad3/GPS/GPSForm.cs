@@ -253,7 +253,7 @@ namespace Unidad3.GPS
                 toS = c2;
                 
                 var solver = PathSolverFactory.Solver(graph, n1, n2);
-                path = solver.PathTo(n2).Reverse().ToList();
+                path = solver.PathTo(n2).ToList();
                 Console.WriteLine("Distancia " + solver.DistTo(n2));
                 Console.WriteLine("Tiempo " + (DateTime.Now - a));
 
@@ -297,7 +297,7 @@ namespace Unidad3.GPS
                 if (to != null)
                 {
                     var solver = PathSolverFactory.Solver(graph, from, to);
-                    path = solver.PathTo(to).Reverse().ToList();
+                    path = solver.PathTo(to).ToList();
                     Console.WriteLine(solver.DistTo(to));
                 }
             }
@@ -313,7 +313,7 @@ namespace Unidad3.GPS
                 if (from != null)
                 {
                     var solver = PathSolverFactory.Solver(graph, from, to);
-                    path = solver.PathTo(to).Reverse().ToList();
+                    path = solver.PathTo(to).ToList();
                     Console.WriteLine(solver.DistTo(to));
                 }
 

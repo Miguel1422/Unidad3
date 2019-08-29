@@ -1,6 +1,7 @@
 ﻿using GPS.Graph;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Unidad3.Graph
 {
@@ -72,7 +73,7 @@ namespace Unidad3.Graph
                 path.Push(e);
                 x = e.Other(x);
             }
-            return path;
+            return path.Reverse();
         }
 
         internal class Aux : IComparable<Aux>
