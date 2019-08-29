@@ -86,6 +86,8 @@
     <Compile Include="Graph\Dijkstra.cs" />
     <Compile Include="Graph\Edge.cs" />
     <Compile Include="Graph\Heap.cs" />
+    <Compile Include="Graph\PathResolver.cs" />
+    <Compile Include="Graph\PathSolverFactory.cs" />
     <Compile Include="Graph\WeightedGraph.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -109,7 +109,7 @@ namespace Unidad3.GPS.Util
                 {
                     long idA = long.Parse(tok[j]);
                     Node b = nodeById[idA];
-                    G.AddEdge(a, b, Distance(a, b));
+                    G.AddEdge(a, b, a.Distance(b));
                 }
 
 
@@ -118,31 +118,7 @@ namespace Unidad3.GPS.Util
             GC.Collect();
 
         }
-
-        private double ToRadians(double n)
-        {
-            return (n * Math.PI / 180);
-        }
-
-        public double Distance(Node a, Node b)
-        {
-            double ans = 0;
-            double lat1 = ToRadians(a.Latitude);
-            double lon1 = ToRadians(a.Longitude);
-            double lat2 = ToRadians(b.Latitude);
-            double lon2 = ToRadians(b.Longitude);
-
-            double difLat = (ToRadians(a.Latitude - b.Latitude));
-            double diflon = (ToRadians(a.Longitude - b.Longitude));
-            double aa = Math.Pow(Math.Sin(difLat / 2), 2) + Math.Cos(lat1) * Math.Cos(lat2) * Math.Pow(Math.Sin(diflon/2) , 2);
-            double c = 2 * Math.Atan2(Math.Sqrt(aa), Math.Sqrt(1 - aa));
-            ans = 6371 * c * 1000;
-
-            return ans;
-
-
-        }
-
+        
         public List<Node> Nodes
         {
             get { return nodes; }

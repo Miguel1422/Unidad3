@@ -32,6 +32,25 @@ namespace Unidad3.GPS.Util
             get { return lon; }
         }
 
+        public double Distance(Node other)
+        {
+            double ans = 0;
+            double lat1 = ToRadians(this.Latitude);
+            double lon1 = ToRadians(this.Longitude);
+            double lat2 = ToRadians(other.Latitude);
+            double lon2 = ToRadians(other.Longitude);
+
+            double difLat = (ToRadians(this.Latitude - other.Latitude));
+            double diflon = (ToRadians(this.Longitude - other.Longitude));
+            double aa = Math.Pow(Math.Sin(difLat / 2), 2) + Math.Cos(lat1) * Math.Cos(lat2) * Math.Pow(Math.Sin(diflon/2) , 2);
+            double c = 2 * Math.Atan2(Math.Sqrt(aa), Math.Sqrt(1 - aa));
+            ans = 6371 * c * 1000;
+            return ans;
+        }
+        private double ToRadians(double n)
+        {
+            return (n * Math.PI / 180);
+        }
         public override int GetHashCode()
         {
             return id.GetHashCode();

@@ -12,22 +12,20 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 using GPS.GPS;
+using GPS.Graph;
 
 namespace Unidad3.GPS
 {
     public partial class GPSForm : Form
     {
-        private Parser parser;
         private List<City> ciudades;
         private WeightedGraph<Node> graph;
         private Dictionary<long, Node> nodeById;
-        private List<Node> nodos;
         private List<Way> carreteras;
         private Dictionary<Node, List<Way>> waysByNode;
         private Dictionary<string, City> ciudad;
         private KdTree kd;
         private List<Edge> path;
-        private Dijkstra<Node> dijk;
         private Image mapC;
         private Node from;
         private Node to;
@@ -58,7 +56,7 @@ namespace Unidad3.GPS
         public GPSForm()
         {
             InitializeComponent();
-            parser = new Parser();
+            Parser parser = new Parser();
 
             minX = parser.XMin;
             minY = parser.YMin;
@@ -74,11 +72,9 @@ namespace Unidad3.GPS
 
             kd = new KdTree();
             ciudades = parser.Cities;
-            dijk = null;
             path = new List<Edge>();
             graph = parser.Graph;
             nodeById = parser.NodeById;
-            nodos = parser.Nodes;
             carreteras = parser.Ways;
             waysByNode = parser.WaysByNode;
             foreach (City item in parser.Cities)
@@ -104,18 +100,6 @@ namespace Unidad3.GPS
             prev = DateTime.Now;
         }
 
-
-        private Dijkstra<Node> GeneratePath(Node from, Node to)
-        {
-            Dijkstra<Node> temp = graph.GetDijkstra(from, to);
-            return temp;
-        }
-
-        private List<Edge> GetPath(Dijkstra<Node> dijkstra, Node to)
-        {
-            List<Edge> l = graph.Path(dijk, to);
-            return l;
-        }
 
         public static double map(double min, double max, double rMin, double rMax, double val)
         {
@@ -256,8 +240,6 @@ namespace Unidad3.GPS
         {
             try
             {
-
-
                 string c1 = comboBox1.SelectedItem.ToString();
                 string c2 = comboBox2.SelectedItem.ToString();
                 City ca = ciudad[c1];
@@ -269,9 +251,10 @@ namespace Unidad3.GPS
                 to = n2;
                 fromS = c1;
                 toS = c2;
-                dijk = GeneratePath(n1, n2);
-                path = GetPath(dijk, n2);
-                Console.WriteLine("Distancia " + graph.DistanceTo(dijk, n2));
+                
+                var solver = PathSolverFactory.Solver(graph, n1, n2);
+                path = solver.PathTo(n2).Reverse().ToList();
+                Console.WriteLine("Distancia " + solver.DistTo(n2));
                 Console.WriteLine("Tiempo " + (DateTime.Now - a));
 
                 doubleBufferedPanel1.Invalidate();
@@ -292,7 +275,7 @@ namespace Unidad3.GPS
             DrawPath(g);
             DrawDestination(g);
             //DrawCities(g);
-            //DrawWays(g);
+            DrawWays(g);
         }
 
         private void doubleBufferedPanel1_MouseClick(object sender, MouseEventArgs e)
@@ -313,9 +296,9 @@ namespace Unidad3.GPS
 
                 if (to != null)
                 {
-                    dijk = graph.GetDijkstra(from, to);
-                    path = GetPath(dijk, to);
-                    Console.WriteLine(graph.DistanceTo(dijk, to));
+                    var solver = PathSolverFactory.Solver(graph, from, to);
+                    path = solver.PathTo(to).Reverse().ToList();
+                    Console.WriteLine(solver.DistTo(to));
                 }
             }
             else
@@ -329,9 +312,9 @@ namespace Unidad3.GPS
                 toS = WaysByNode(n2);
                 if (from != null)
                 {
-                    dijk = graph.GetDijkstra(from, to);
-                    path = GetPath(dijk, to);
-                    Console.WriteLine(graph.DistanceTo(dijk, to));
+                    var solver = PathSolverFactory.Solver(graph, from, to);
+                    path = solver.PathTo(to).Reverse().ToList();
+                    Console.WriteLine(solver.DistTo(to));
                 }
 
             }
@@ -417,7 +400,7 @@ namespace Unidad3.GPS
                     string calle = StreetBetween(prev, nue);
                     int k = i + 1;
                     double distance = 0;
-                    distance += parser.Distance(prev, nue);
+                    distance += prev.Distance(nue);
                     Node ant = nue;
                     while (k < path.Count)
                     {
@@ -429,7 +412,7 @@ namespace Unidad3.GPS
 
                         if (NodeContains(nueAux, calle))
                         {
-                            distance += parser.Distance(ant, nueAux);
+                            distance += ant.Distance(nueAux);
                             ant = nueAux;
                         }
                         else break;
@@ -452,17 +435,20 @@ namespace Unidad3.GPS
                     totalDistance += distance;
                     i = k;
                 }
-                double asd = graph.DistanceTo(dijk, to);
+                
+                var solver = PathSolverFactory.Solver(graph, from, to);
+
+                double dist = solver.DistTo(to);
                 string disS = totalDistance > 1000 ? String.Format("{0:0.00}Km", totalDistance / 1000) : String.Format("{0:0.00}m", totalDistance);
                 camino.Add(String.Format("Ha llegado a su destino en {0}", disS));
 
-                if (Math.Abs(totalDistance - asd) > 1)
+                if (Math.Abs(totalDistance - dist) > 1)
                 {
                     throw new Exception("Camino incorrecto");
                 }
                 else
                 {
-                    Console.WriteLine("todo bien " + asd);
+                    Console.WriteLine("todo bien " + dist);
                 }
 
                 PathFrm p = new PathFrm(camino);
