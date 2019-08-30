@@ -50,7 +50,7 @@ namespace GPS.Graph
             int w = e.Other(v);
             if (distTo[w] > distTo[v] + e.Weight)
             {
-                double h = destination.Distance(graph.GetVertex(v));
+                double h = destination.Distance(graph.GetVertex(w));
                 distTo[w] = distTo[v] + e.Weight;
                 edgeTo[w] = e;
                 pq.Add(new Aux(w, distTo[w], h));
