@@ -83,9 +83,13 @@
     <Compile Include="GPS\Util\Node.cs" />
     <Compile Include="GPS\Util\Parser.cs" />
     <Compile Include="GPS\Util\Way.cs" />
+    <Compile Include="Graph\BFS.cs" />
+    <Compile Include="Graph\DFS.cs" />
     <Compile Include="Graph\Dijkstra.cs" />
     <Compile Include="Graph\Edge.cs" />
     <Compile Include="Graph\Heap.cs" />
+    <Compile Include="Graph\PathResolver.cs" />
+    <Compile Include="Graph\PathSolverFactory.cs" />
     <Compile Include="Graph\WeightedGraph.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

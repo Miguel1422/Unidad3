@@ -96,36 +96,6 @@ namespace Unidad3.Graph
             return Adj(ids[v]);
         }
 
-        public Dijkstra<T> GetDijkstra(T from, T to)
-        {
-            Dijkstra<T> d = new Dijkstra<T>(this, names[from], names[to]);
-            return d;
-        }
-
-        public List<Edge> Path(Dijkstra<T> d, T to)
-        {
-            List<Edge> p = new List<Edge>();
-
-            Stack<Edge> st = d.PathTo(names[to]);
-            if (st == null)
-            {
-                throw new Exception("No se puede encontrar una ruta");
-            }
-
-            foreach (Edge item in st)
-            {
-                p.Add(item);
-            }
-
-            return p;
-        }
-
-        public double DistanceTo(Dijkstra<T> d, T to)
-        {
-            return d.DistTo(names[to]);
-        }
-
-
         public List<T> AdjS(T v)
         {
             List<Edge> aa = Adj(v);

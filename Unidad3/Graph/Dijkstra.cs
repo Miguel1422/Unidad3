@@ -1,36 +1,38 @@
-﻿using System;
+﻿using GPS.Graph;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Unidad3.Graph
 {
-    public class Dijkstra<T>
+    public class Dijkstra<T> : PathResolver<T>
     {
         private double[] distTo;
         private Edge[] edgeTo;
         private Heap<Aux> pq;
 
-        public Dijkstra(WeightedGraph<T> G, int s, int des = -1)
+        public Dijkstra(WeightedGraph<T> g, T s, T des = default(T)) : base(g, s, des)
         {
             pq = new MinHeap<Aux>();
-            distTo = new double[G.V];
-            edgeTo = new Edge[G.V];
+            distTo = new double[g.V];
+            edgeTo = new Edge[g.V];
 
-            for (int i = 0; i < G.V; i++)
+            for (int i = 0; i < g.V; i++)
             {
                 distTo[i] = double.PositiveInfinity;
             }
-            distTo[s] = 0;
+            distTo[g.GetVertex(s)] = 0;
 
-            pq.Add(new Aux(s, distTo[s]));
+            pq.Add(new Aux(g.GetVertex(s), distTo[g.GetVertex(s)]));
 
             while (pq.Count > 0)
             {
                 Aux v = pq.ExtractDominating();
-                if (v.V == des)
+                if (v.V == g.GetVertex(des))
                 {
                     break;
                 }
-                foreach (Edge e in G.Adj(v.V))
+                foreach (Edge e in g.Adj(v.V))
                 {
                     Relax(e, v.V);
                 }
@@ -50,22 +52,23 @@ namespace Unidad3.Graph
             }
         }
 
-        public double DistTo(int v)
+        public override double DistTo(T v)
         {
-            return distTo[v];
+            return distTo[graph.GetVertex(v)];
         }
 
-        public bool HasPathTo(int v)
+        public override bool HasPathTo(T v)
         {
-            return distTo[v] < double.PositiveInfinity;
+            return distTo[graph.GetVertex(v)] < double.PositiveInfinity;
         }
 
-        public Stack<Edge> PathTo(int v)
+        public override IEnumerable<Edge> PathTo(T v)
         {
             if (!HasPathTo(v)) return null;
+            int nodeV = graph.GetVertex(v);
             Stack<Edge> path = new Stack<Edge>();
-            int x = v;
-            for (Edge e = edgeTo[v]; e != null; e = edgeTo[x])
+            int x = nodeV;
+            for (Edge e = edgeTo[nodeV]; e != null; e = edgeTo[x])
             {
                 path.Push(e);
                 x = e.Other(x);

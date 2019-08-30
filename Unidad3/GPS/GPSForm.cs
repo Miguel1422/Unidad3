@@ -12,22 +12,20 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 using GPS.GPS;
+using GPS.Graph;
 
 namespace Unidad3.GPS
 {
     public partial class GPSForm : Form
     {
-        private Parser parser;
         private List<City> ciudades;
         private WeightedGraph<Node> graph;
         private Dictionary<long, Node> nodeById;
-        private List<Node> nodos;
         private List<Way> carreteras;
         private Dictionary<Node, List<Way>> waysByNode;
         private Dictionary<string, City> ciudad;
         private KdTree kd;
-        private List<Edge> path;
-        private Dijkstra<Node> dijk;
+
         private Image mapC;
         private Node from;
         private Node to;
@@ -58,7 +56,7 @@ namespace Unidad3.GPS
         public GPSForm()
         {
             InitializeComponent();
-            parser = new Parser();
+            Parser parser = new Parser();
 
             minX = parser.XMin;
             minY = parser.YMin;
@@ -74,11 +72,8 @@ namespace Unidad3.GPS
 
             kd = new KdTree();
             ciudades = parser.Cities;
-            dijk = null;
-            path = new List<Edge>();
             graph = parser.Graph;
             nodeById = parser.NodeById;
-            nodos = parser.Nodes;
             carreteras = parser.Ways;
             waysByNode = parser.WaysByNode;
             foreach (City item in parser.Cities)
@@ -101,21 +96,13 @@ namespace Unidad3.GPS
             comboBox1.Sorted = true;
             comboBox2.Sorted = true;
 
+            cbOpcionesBusuqueda.Items.Add(SearchTypes.Dijkstra);
+            cbOpcionesBusuqueda.Items.Add(SearchTypes.BFS);
+            cbOpcionesBusuqueda.Items.Add(SearchTypes.DFS);
+            cbOpcionesBusuqueda.SelectedIndex = 0;
             prev = DateTime.Now;
         }
 
-
-        private Dijkstra<Node> GeneratePath(Node from, Node to)
-        {
-            Dijkstra<Node> temp = graph.GetDijkstra(from, to);
-            return temp;
-        }
-
-        private List<Edge> GetPath(Dijkstra<Node> dijkstra, Node to)
-        {
-            List<Edge> l = graph.Path(dijk, to);
-            return l;
-        }
 
         public static double map(double min, double max, double rMin, double rMax, double val)
         {
@@ -198,12 +185,16 @@ namespace Unidad3.GPS
 
             }
         }
-
+        IEnumerable<Edge> cachedPath = null;
         private void DrawPath(Graphics g)
         {
             Pen redPen = new Pen(Color.FromArgb(255, 255, 0, 0), 6);
             g.SmoothingMode = SmoothingMode.AntiAlias;
-            foreach (Edge item in path)
+            if (from == null || to == null) return;
+            if (cachedPath == null)
+                cachedPath = PathSolverFactory.Solver(graph, from, to, (SearchTypes)cbOpcionesBusuqueda.SelectedItem).PathTo(to);
+
+            foreach (Edge item in cachedPath)
             {
                 Node a = graph.GetVertex(item.Either());
                 Node b = graph.GetVertex(item.Other(item.Either()));
@@ -256,8 +247,6 @@ namespace Unidad3.GPS
         {
             try
             {
-
-
                 string c1 = comboBox1.SelectedItem.ToString();
                 string c2 = comboBox2.SelectedItem.ToString();
                 City ca = ciudad[c1];
@@ -269,10 +258,7 @@ namespace Unidad3.GPS
                 to = n2;
                 fromS = c1;
                 toS = c2;
-                dijk = GeneratePath(n1, n2);
-                path = GetPath(dijk, n2);
-                Console.WriteLine("Distancia " + graph.DistanceTo(dijk, n2));
-                Console.WriteLine("Tiempo " + (DateTime.Now - a));
+                cachedPath = null;
 
                 doubleBufferedPanel1.Invalidate();
             }
@@ -292,7 +278,7 @@ namespace Unidad3.GPS
             DrawPath(g);
             DrawDestination(g);
             //DrawCities(g);
-            //DrawWays(g);
+            DrawWays(g);
         }
 
         private void doubleBufferedPanel1_MouseClick(object sender, MouseEventArgs e)
@@ -310,13 +296,7 @@ namespace Unidad3.GPS
                 Node n1 = pp.GetNode;
                 from = n1;
                 fromS = WaysByNode(n1);
-
-                if (to != null)
-                {
-                    dijk = graph.GetDijkstra(from, to);
-                    path = GetPath(dijk, to);
-                    Console.WriteLine(graph.DistanceTo(dijk, to));
-                }
+                cachedPath = null;
             }
             else
             {
@@ -327,12 +307,7 @@ namespace Unidad3.GPS
                 Node n2 = pp.GetNode;
                 to = n2;
                 toS = WaysByNode(n2);
-                if (from != null)
-                {
-                    dijk = graph.GetDijkstra(from, to);
-                    path = GetPath(dijk, to);
-                    Console.WriteLine(graph.DistanceTo(dijk, to));
-                }
+                cachedPath = null;
 
             }
             doubleBufferedPanel1.Invalidate();
@@ -364,7 +339,7 @@ namespace Unidad3.GPS
                 dy = (int)(e.Y - yI + yA);
                 moving = true;
                 DateTime ac = DateTime.Now;
-                if ((ac - prev).TotalMilliseconds > 40)
+                if ((ac - prev).TotalMilliseconds > 5)
                 {
                     doubleBufferedPanel1.Invalidate();
                     prev = ac;
@@ -403,75 +378,79 @@ namespace Unidad3.GPS
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if (path != null)
+            if (from == null || to == null)
             {
-                Node prev = from;
-                List<string> camino = new List<string>();
-                double totalDistance = 0;
-                for (int i = 0; i < path.Count;)
+                MessageBox.Show("Primero escoja una ruta");
+                return;
+            }
+            var path = PathSolverFactory.Solver(graph, from, to, (SearchTypes)cbOpcionesBusuqueda.SelectedItem).PathTo(to).ToList();
+            Node prev = from;
+            List<string> camino = new List<string>();
+            double totalDistance = 0;
+            for (int i = 0; i < path.Count;)
+            {
+                Edge item = path[i];
+                Node a = graph.GetVertex(item.Either());
+                Node b = graph.GetVertex(item.Other(item.Either()));
+                Node nue = (prev == a) ? b : a;
+                string calle = StreetBetween(prev, nue);
+                int k = i + 1;
+                double distance = 0;
+                distance += prev.Distance(nue);
+                Node ant = nue;
+                while (k < path.Count)
                 {
-                    Edge item = path[i];
-                    Node a = graph.GetVertex(item.Either());
-                    Node b = graph.GetVertex(item.Other(item.Either()));
-                    Node nue = (prev == a) ? b : a;
-                    string calle = StreetBetween(prev, nue);
-                    int k = i + 1;
-                    double distance = 0;
-                    distance += parser.Distance(prev, nue);
-                    Node ant = nue;
-                    while (k < path.Count)
+                    Edge siguiente = path[k];
+                    Node n1 = graph.GetVertex(siguiente.Either());
+                    Node n2 = graph.GetVertex(siguiente.Other(siguiente.Either()));
+
+                    Node nueAux = n1 == ant ? n2 : n1;
+
+                    if (NodeContains(nueAux, calle))
                     {
-                        Edge siguiente = path[k];
-                        Node n1 = graph.GetVertex(siguiente.Either());
-                        Node n2 = graph.GetVertex(siguiente.Other(siguiente.Either()));
-
-                        Node nueAux = n1 == ant ? n2 : n1;
-
-                        if (NodeContains(nueAux, calle))
-                        {
-                            distance += parser.Distance(ant, nueAux);
-                            ant = nueAux;
-                        }
-                        else break;
-                        k++;
+                        distance += ant.Distance(nueAux);
+                        ant = nueAux;
                     }
-
-                    StringBuilder sb = new StringBuilder();
-                    sb.Append("Desde ");
-                    foreach (Way w in waysByNode[prev])
-                    {
-                        sb.Append(w.Name + ", ");
-                    }
-                    string dis = distance > 1000 ? String.Format("{0:0.00}Km", distance / 1000) : String.Format("{0:0.00}m", distance);
-                    sb.AppendFormat("\nContinue por {0} {1} Hasta: \n", calle, dis);
-                    sb.Append(WaysByNode(ant));
-                    sb.Append("\n");
-                    camino.Add(sb.ToString());
-                    camino.Add("********************************");
-                    prev = ant;
-                    totalDistance += distance;
-                    i = k;
+                    else break;
+                    k++;
                 }
-                double asd = graph.DistanceTo(dijk, to);
-                string disS = totalDistance > 1000 ? String.Format("{0:0.00}Km", totalDistance / 1000) : String.Format("{0:0.00}m", totalDistance);
-                camino.Add(String.Format("Ha llegado a su destino en {0}", disS));
 
-                if (Math.Abs(totalDistance - asd) > 1)
+                StringBuilder sb = new StringBuilder();
+                sb.Append("Desde ");
+                foreach (Way w in waysByNode[prev])
                 {
-                    throw new Exception("Camino incorrecto");
+                    sb.Append(w.Name + ", ");
                 }
-                else
-                {
-                    Console.WriteLine("todo bien " + asd);
-                }
+                string dis = distance > 1000 ? String.Format("{0:0.00}Km", distance / 1000) : String.Format("{0:0.00}m", distance);
+                sb.AppendFormat("\nContinue por {0} {1} Hasta: \n", calle, dis);
+                sb.Append(WaysByNode(ant));
+                sb.Append("\n");
+                camino.Add(sb.ToString());
+                camino.Add("********************************");
+                prev = ant;
+                totalDistance += distance;
+                i = k;
+            }
 
-                PathFrm p = new PathFrm(camino);
-                p.ShowDialog();
+            var solver = PathSolverFactory.Solver(graph, from, to, (SearchTypes)cbOpcionesBusuqueda.SelectedItem);
+
+            double dist = solver.DistTo(to);
+            string disS = totalDistance > 1000 ? String.Format("{0:0.00}Km", totalDistance / 1000) : String.Format("{0:0.00}m", totalDistance);
+            camino.Add(String.Format("Ha llegado a su destino en {0}", disS));
+
+            if (Math.Abs(totalDistance - dist) > 1)
+            {
+                throw new Exception("Camino incorrecto");
             }
             else
             {
-                MessageBox.Show("Primero escoja una ruta");
+                Console.WriteLine("todo bien " + dist);
             }
+
+            PathFrm p = new PathFrm(camino);
+            p.ShowDialog();
+
+
         }
 
     }
