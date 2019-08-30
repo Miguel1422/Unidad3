@@ -1,17 +1,20 @@
-﻿using GPS.Graph;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Unidad3.GPS.Util;
+using Unidad3.Graph;
 
-namespace Unidad3.Graph
+namespace GPS.Graph
 {
-    public class Dijkstra<T> : PathResolver<T>
+    public class AStar : PathResolver<Node>
     {
         private double[] distTo;
         private Edge[] edgeTo;
         private Heap<Aux> pq;
 
-        public Dijkstra(WeightedGraph<T> g, T s, T des) : base(g, s, des)
+        public AStar(WeightedGraph<Node> g, Node s, Node des) : base(g, s, des)
         {
             pq = new MinHeap<Aux>();
             distTo = new double[g.V];
@@ -23,7 +26,7 @@ namespace Unidad3.Graph
             }
             distTo[g.GetVertex(s)] = 0;
 
-            pq.Add(new Aux(g.GetVertex(s), distTo[g.GetVertex(s)]));
+            pq.Add(new Aux(g.GetVertex(s), distTo[g.GetVertex(s)], 0));
             int exploredNodes = 0;
             while (pq.Count > 0)
             {
@@ -47,24 +50,25 @@ namespace Unidad3.Graph
             int w = e.Other(v);
             if (distTo[w] > distTo[v] + e.Weight)
             {
+                double h = destination.Distance(graph.GetVertex(v));
                 distTo[w] = distTo[v] + e.Weight;
                 edgeTo[w] = e;
-                pq.Add(new Aux(w, distTo[w]));
+                pq.Add(new Aux(w, distTo[w], h));
 
             }
         }
 
-        public override double DistTo(T v)
+        public override double DistTo(Node v)
         {
             return distTo[graph.GetVertex(v)];
         }
 
-        public override bool HasPathTo(T v)
+        public override bool HasPathTo(Node v)
         {
             return distTo[graph.GetVertex(v)] < double.PositiveInfinity;
         }
 
-        public override IEnumerable<Edge> PathTo(T v)
+        public override IEnumerable<Edge> PathTo(Node v)
         {
             if (!HasPathTo(v)) return null;
             int nodeV = graph.GetVertex(v);
@@ -80,25 +84,25 @@ namespace Unidad3.Graph
 
         internal class Aux : IComparable<Aux>
         {
-            private int v;
-            private double weight;
-            public Aux(int v, double weight)
+            private const float factor = 0.7f;
+            private readonly int v;
+            private readonly double weight;
+            private readonly double heuristic;
+
+            public Aux(int v, double weight, double heuristic)
             {
                 this.v = v;
                 this.weight = weight;
+                this.heuristic = heuristic;
             }
             public int CompareTo(Aux other)
             {
-                return weight.CompareTo(other.weight);
+                return (weight + factor * heuristic).CompareTo(other.weight + factor * other.heuristic);
             }
 
             public int V
             {
                 get { return v; }
-            }
-            public double Weight
-            {
-                get { return weight; }
             }
         }
 

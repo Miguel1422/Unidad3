@@ -13,11 +13,13 @@ namespace GPS.Graph
         private double[] distTo;
         private Edge[] edgeTo;
         private WeightedGraph<T> graph;
-        public DFS(WeightedGraph<T> G, T s, T des = default(T)) : base(G, s, des)
+        private int destinationIndx;
+        public DFS(WeightedGraph<T> G, T s, T des) : base(G, s, des)
         {
             this.visited = new bool[G.V];
             this.distTo = new double[G.V];
             this.graph = G;
+            this.destinationIndx = graph.GetVertex(des);
             edgeTo = new Edge[G.V];
 
             for (int i = 0; i < visited.Length; i++)
@@ -29,10 +31,12 @@ namespace GPS.Graph
         }
 
         private bool[] visited;
+        private int exploredNodes = 0;
         private void dfs(int curr)
         {
+            exploredNodes++;
             visited[curr] = true;
-
+            if (curr == destinationIndx) ExploredNodes = exploredNodes;
             foreach (var node in graph.Adj(curr))
             {
                 int other = node.Other(curr);

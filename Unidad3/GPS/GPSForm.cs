@@ -99,6 +99,7 @@ namespace Unidad3.GPS
             cbOpcionesBusuqueda.Items.Add(SearchTypes.Dijkstra);
             cbOpcionesBusuqueda.Items.Add(SearchTypes.BFS);
             cbOpcionesBusuqueda.Items.Add(SearchTypes.DFS);
+            cbOpcionesBusuqueda.Items.Add(SearchTypes.AStar);
             cbOpcionesBusuqueda.SelectedIndex = 0;
             prev = DateTime.Now;
         }
@@ -436,7 +437,7 @@ namespace Unidad3.GPS
 
             double dist = solver.DistTo(to);
             string disS = totalDistance > 1000 ? String.Format("{0:0.00}Km", totalDistance / 1000) : String.Format("{0:0.00}m", totalDistance);
-            camino.Add(String.Format("Ha llegado a su destino en {0}", disS));
+            camino.Add(String.Format("Ha llegado a su destino en {0} visitando {1} nodos", disS, solver.ExploredNodes));
 
             if (Math.Abs(totalDistance - dist) > 1)
             {

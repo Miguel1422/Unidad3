@@ -20,6 +20,7 @@ namespace GPS.Graph
             this.destination = destination;
         }
 
+        public int ExploredNodes { get; protected set; }
         public abstract double DistTo(T v);
         public abstract bool HasPathTo(T v);
         public abstract IEnumerable<Edge> PathTo(T v);

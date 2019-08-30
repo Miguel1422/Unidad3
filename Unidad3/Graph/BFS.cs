@@ -12,7 +12,7 @@ namespace GPS.Graph
         private double[] distTo;
         private Edge[] edgeTo;
         private bool[] visited;
-        public BFS(WeightedGraph<T> graph, T source, T destination = default) : base(graph, source, destination)
+        public BFS(WeightedGraph<T> graph, T source, T destination) : base(graph, source, destination)
         {
             distTo = new double[graph.V];
             visited = new bool[graph.V];
@@ -21,15 +21,24 @@ namespace GPS.Graph
             q.Enqueue(graph.GetVertex(source));
             visited[graph.GetVertex(source)] = true;
 
+            int exploredNodes = 0;
+            int dest = graph.GetVertex(destination);
             while (q.Count > 0)
             {
                 int curr = q.Dequeue();
+                exploredNodes++;
+                if (curr == dest)
+                {
+                    ExploredNodes = exploredNodes;
+                    break;
+                }
                 foreach (var edge in graph.Adj(curr))
                 {
                     int other = edge.Other(curr);
                     if (!visited[other])
                     {
                         edgeTo[other] = edge;
+                        distTo[other] = distTo[curr] + edge.Weight;
                         visited[other] = true;
                         q.Enqueue(other);
                     }
