@@ -1,6 +1,7 @@
 package test;
 
 import edu.princeton.cs.algs4.StdDraw;
+
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,7 +21,7 @@ import java.util.logging.Logger;
 
 public class ReadAndPrintXMLFile {
 
-    static File f = new File("Rutadel mapa \\map.osm");
+    static File f = new File("map.osm");
     static boolean nombres = true;//true habilita calles sin nombres
     static boolean files = true;
 
@@ -269,74 +270,78 @@ public class ReadAndPrintXMLFile {
         HashSet<Nodo> necesarios = new HashSet<Nodo>();
         if (files) {
 
-            File nods = new File("Ruta para guardar\\nodes.txt");
-            FileWriter fw = new FileWriter(nods);
-            BufferedWriter bw = new BufferedWriter(fw);
+            {
+                File nods = new File("nodes.txt");
+                FileWriter fw = new FileWriter(nods);
+                BufferedWriter bw = new BufferedWriter(fw);
 
-            for (Nodo nodo : intersecciones) {
-                necesarios.add(nodo);
-                String res = String.format("%011d|%015f|%015f\n", nodo.id, nodo.lat, nodo.lon);
-                //bw.write(nodo.id + "|" + nodo.lat + "|" + nodo.lon + "|" + (nodo.name == null ? "" : nodo.name) + "\n");
-                bw.write(res);
+                for (Nodo nodo : intersecciones) {
+                    necesarios.add(nodo);
+                    String res = String.format("%011d|%015f|%015f\n", nodo.id, nodo.lat, nodo.lon);
+                    //bw.write(nodo.id + "|" + nodo.lat + "|" + nodo.lon + "|" + (nodo.name == null ? "" : nodo.name) + "\n");
+                    bw.write(res);
+                }
+                bw.close();
             }
-            bw.close();
+            {
+                File nods = new File("Ciudades.txt");
+                FileWriter fw = new FileWriter(nods);
+                BufferedWriter bw = new BufferedWriter(fw);
 
-            File nods = new File("Ruta para guardar\\Ciudades.txt");
-            fw = new FileWriter(nods);
-            bw = new BufferedWriter(fw);
-
-            for (Nodo nodo : ciudades) {
-                String res = String.format("%011d|%015f|%015f|%s\n", nodo.id, nodo.lat, nodo.lon, nodo.name);
-                //bw.write(nodo.id + "|" + nodo.lat + "|" + nodo.lon + "|" + (nodo.name == null ? "" : nodo.name) + "\n");
-                bw.write(res);
+                for (Nodo nodo : ciudades) {
+                    String res = String.format("%011d|%015f|%015f|%s\n", nodo.id, nodo.lat, nodo.lon, nodo.name);
+                    //bw.write(nodo.id + "|" + nodo.lat + "|" + nodo.lon + "|" + (nodo.name == null ? "" : nodo.name) + "\n");
+                    bw.write(res);
+                }
+                bw.close();
             }
-            bw.close();
+            {
+                HashSet<Long> ap = new HashSet<>();
+                File nods = new File("Grafo.txt");
+                FileWriter fw = new FileWriter(nods);
+                BufferedWriter bw = new BufferedWriter(fw);
 
-            HashSet<Long> ap = new HashSet<>();
-            File nods = new File("Ruta para guardar\\Grafo.txt");
-            fw = new FileWriter(nods);
-            bw = new BufferedWriter(fw);
+                for (int i = 0; i < g.V(); i++) {
+                    StringBuilder sb = new StringBuilder(100);
+                    Nodo ac = g.nodeAt(i);
+                    ap.add(ac.id);
+                    sb.append(String.format("%011d", ac.id));
+                    for (Nodo nodo : g.adj(ac)) {
+                        if (!ap.contains(nodo.id)) {
+                            sb.append("|").append(String.format("%011d", nodo.id));
+                        }
 
-            for (int i = 0; i < g.V(); i++) {
-                StringBuilder sb = new StringBuilder(100);
-                Nodo ac = g.nodeAt(i);
-                ap.add(ac.id);
-                sb.append(String.format("%011d", ac.id));
-                for (Nodo nodo : g.adj(ac)) {
-                    if (!ap.contains(nodo.id)) {
-                        sb.append("|").append(String.format("%011d", nodo.id));
+                    }
+                    if (sb.length() > 11) {
+                        sb.append("\n");
+                        bw.write(sb.toString());
                     }
 
                 }
-                if (sb.length() > 11) {
-                    sb.append("\n");
+                bw.close();
+            }
+            {
+                File nods = new File("Carreteras.txt");
+                FileWriter fw = new FileWriter(nods);
+                BufferedWriter bw = new BufferedWriter(fw);
+
+                for (Carretera car : carr) {
+
+                    StringBuilder sb = new StringBuilder(100);
+
+                    sb.append(String.format("%011d", car.id));
+                    for (Nodo nodo : car.nodos) {
+                        if (necesarios.contains(nodo)) {
+                            sb.append("|").append(String.format("%011d", nodo.id));
+                        }
+
+                    }
+
+                    sb.append("|").append(car.name).append("\n");
                     bw.write(sb.toString());
                 }
-
+                bw.close();
             }
-            bw.close();
-
-            File nods = new File("Ruta para guardar\\Carreteras.txt");
-            fw = new FileWriter(nods);
-            bw = new BufferedWriter(fw);
-
-            for (Carretera car : carr) {
-
-                StringBuilder sb = new StringBuilder(100);
-
-                sb.append(String.format("%011d", car.id));
-                for (Nodo nodo : car.nodos) {
-                    if (necesarios.contains(nodo)) {
-                        sb.append("|").append(String.format("%011d", nodo.id));
-                    }
-
-                }
-
-                sb.append("|").append(car.name).append("\n");
-                bw.write(sb.toString());
-            }
-            bw.close();
-
             return;
         }
         System.out.println("Edges " + g.E());

@@ -1,5 +1,3 @@
-package test;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,15 +10,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.StringTokenizer;
-import test.ReadAndPrintXMLFile.Nodo;
 
 public class GPS {
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
-        File nods = new File("C:\\Users\\Miguel\\Desktop\\Asd\\Files\\nodes.txt");
-        File graph = new File("C:\\Users\\Miguel\\Desktop\\Asd\\Files\\Grafo.txt");
-        File cities = new File("C:\\Users\\Miguel\\Desktop\\Asd\\Files\\ciudades.txt");
-        File roads = new File("C:\\Users\\Miguel\\Desktop\\Asd\\Files\\carreteras.txt");
+        File nods = new File("nodes.txt");
+        File graph = new File("Grafo.txt");
+        File cities = new File("ciudades.txt");
+        File roads = new File("carreteras.txt");
 
         HashMap<Long, ReadAndPrintXMLFile.Nodo> ids = new HashMap<>();
         ArrayList<ReadAndPrintXMLFile.Nodo> nodos = new ArrayList<>();
@@ -35,7 +32,7 @@ public class GPS {
             long id = Long.parseLong(st.nextToken());
             double lat = Double.parseDouble(st.nextToken());
             double lon = Double.parseDouble(st.nextToken());
-            Nodo n = new ReadAndPrintXMLFile.Nodo(id, lat, lon, null);
+            ReadAndPrintXMLFile.Nodo n = new ReadAndPrintXMLFile.Nodo(id, lat, lon, null);
             nodos.add(n);
             ids.put(id, n);
         }
@@ -46,7 +43,7 @@ public class GPS {
             long id = Long.parseLong(st.nextToken());
             double lat = Double.parseDouble(st.nextToken());
             double lon = Double.parseDouble(st.nextToken());
-            Nodo n = new Nodo(id, lat, lon, null);
+            ReadAndPrintXMLFile.Nodo n = new ReadAndPrintXMLFile.Nodo(id, lat, lon, null);
             ciudades.add(n);
         }
 
@@ -63,21 +60,21 @@ public class GPS {
                     break;
                 }
                 long id = Long.parseLong(aux);
-                Nodo n = ids.get(id);
+                ReadAndPrintXMLFile.Nodo n = ids.get(id);
                 c.nodos.add(n);
             }
             carre.add(c);
         }
 
-        Grafo<Nodo> g = new Grafo<>(nodos.toArray(new Nodo[nodos.size()]));
+        Grafo<ReadAndPrintXMLFile.Nodo> g = new Grafo<>(nodos.toArray(new ReadAndPrintXMLFile.Nodo[nodos.size()]));
         br = new BufferedReader(new FileReader(graph));
         while ((l = br.readLine()) != null) {
             st = new StringTokenizer(l, "|");
             long id = Long.parseLong(st.nextToken());
-            Nodo n = ids.get(id);
+            ReadAndPrintXMLFile.Nodo n = ids.get(id);
             while (st.hasMoreTokens()) {
                 long id2 = Long.parseLong(st.nextToken());
-                Nodo n2 = ids.get(id2);
+                ReadAndPrintXMLFile.Nodo n2 = ids.get(id2);
                 g.addEdge(n, n2);
             }
         }
@@ -98,10 +95,10 @@ public class GPS {
         }
         System.out.println("No marcados " + c);
 
-        FileWriter fw = new FileWriter("C:\\Users\\Miguel\\Desktop\\Asd\\Files\\nodes2.txt");
+        FileWriter fw = new FileWriter("nodes2.txt");
         BufferedWriter bw = new BufferedWriter(fw);
 
-        for (Nodo nodo : nodos) {
+        for (ReadAndPrintXMLFile.Nodo nodo : nodos) {
             if (no.contains(nodo.id)) {
                 continue;
             }
@@ -111,7 +108,7 @@ public class GPS {
         }
         bw.close();
 
-        nods = new File("C:\\Users\\Miguel\\Desktop\\Asd\\Files\\Carreteras2.txt");
+        nods = new File("Carreteras2.txt");
         fw = new FileWriter(nods);
         bw = new BufferedWriter(fw);
 
@@ -120,7 +117,7 @@ public class GPS {
             StringBuilder sb = new StringBuilder(100);
 
             sb.append(String.format("%011d", car.id));
-            for (Nodo nodo : car.nodos) {
+            for (ReadAndPrintXMLFile.Nodo nodo : car.nodos) {
                 if (!no.contains(nodo.id)) {
                     sb.append("|").append(String.format("%011d", nodo.id));
                 }
@@ -136,19 +133,19 @@ public class GPS {
         bw.close();
 
         HashSet<Long> ap = new HashSet<>();
-        nods = new File("C:\\Users\\Miguel\\Desktop\\Asd\\Files\\Grafo2.txt");
+        nods = new File("Grafo2.txt");
         fw = new FileWriter(nods);
         bw = new BufferedWriter(fw);
 
         for (int i = 0; i < g.V(); i++) {
             StringBuilder sb = new StringBuilder(100);
-            Nodo ac = g.nodeAt(i);
+            ReadAndPrintXMLFile.Nodo ac = g.nodeAt(i);
             ap.add(ac.id);
             if (no.contains(ac.id)) {
                 continue;
             }
             sb.append(String.format("%011d", ac.id));
-            for (Nodo nodo : g.adj(ac)) {
+            for (ReadAndPrintXMLFile.Nodo nodo : g.adj(ac)) {
                 if (!ap.contains(nodo.id) && !no.contains(nodo.id)) {
                     sb.append("|").append(String.format("%011d", nodo.id));
                 }
