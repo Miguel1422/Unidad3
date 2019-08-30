@@ -34,12 +34,13 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
-            this.doubleBufferedPanel1 = new Gps.Arbol.DoubleBufferedPanel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.button2 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.cbOpcionesBusuqueda = new System.Windows.Forms.ComboBox();
+            this.doubleBufferedPanel1 = new Gps.Arbol.DoubleBufferedPanel();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
@@ -92,25 +93,9 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // doubleBufferedPanel1
-            // 
-            this.doubleBufferedPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.doubleBufferedPanel1.BackColor = System.Drawing.Color.White;
-            this.doubleBufferedPanel1.DoubleBuffered = true;
-            this.doubleBufferedPanel1.Location = new System.Drawing.Point(0, 59);
-            this.doubleBufferedPanel1.Name = "doubleBufferedPanel1";
-            this.doubleBufferedPanel1.Size = new System.Drawing.Size(783, 463);
-            this.doubleBufferedPanel1.TabIndex = 5;
-            this.doubleBufferedPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.doubleBufferedPanel1_Paint);
-            this.doubleBufferedPanel1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.doubleBufferedPanel1_MouseClick);
-            this.doubleBufferedPanel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.doubleBufferedPanel1_MouseDown);
-            this.doubleBufferedPanel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.doubleBufferedPanel1_MouseMove);
-            this.doubleBufferedPanel1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.doubleBufferedPanel1_MouseUp);
-            // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.cbOpcionesBusuqueda);
             this.panel1.Controls.Add(this.button2);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.trackBar1);
@@ -158,6 +143,34 @@
             this.timer1.Interval = 20;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // cbOpcionesBusuqueda
+            // 
+            this.cbOpcionesBusuqueda.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cbOpcionesBusuqueda.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cbOpcionesBusuqueda.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbOpcionesBusuqueda.FormattingEnabled = true;
+            this.cbOpcionesBusuqueda.Location = new System.Drawing.Point(520, 23);
+            this.cbOpcionesBusuqueda.Name = "cbOpcionesBusuqueda";
+            this.cbOpcionesBusuqueda.Size = new System.Drawing.Size(172, 21);
+            this.cbOpcionesBusuqueda.TabIndex = 8;
+            // 
+            // doubleBufferedPanel1
+            // 
+            this.doubleBufferedPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.doubleBufferedPanel1.BackColor = System.Drawing.Color.White;
+            this.doubleBufferedPanel1.DoubleBuffered = true;
+            this.doubleBufferedPanel1.Location = new System.Drawing.Point(0, 59);
+            this.doubleBufferedPanel1.Name = "doubleBufferedPanel1";
+            this.doubleBufferedPanel1.Size = new System.Drawing.Size(783, 463);
+            this.doubleBufferedPanel1.TabIndex = 5;
+            this.doubleBufferedPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.doubleBufferedPanel1_Paint);
+            this.doubleBufferedPanel1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.doubleBufferedPanel1_MouseClick);
+            this.doubleBufferedPanel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.doubleBufferedPanel1_MouseDown);
+            this.doubleBufferedPanel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.doubleBufferedPanel1_MouseMove);
+            this.doubleBufferedPanel1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.doubleBufferedPanel1_MouseUp);
+            // 
             // GPSForm
             // 
             this.AcceptButton = this.button1;
@@ -188,5 +201,6 @@
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox cbOpcionesBusuqueda;
     }
 }

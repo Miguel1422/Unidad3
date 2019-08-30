@@ -23,7 +23,7 @@ namespace Unidad3.Graph
             }
             distTo[g.GetVertex(s)] = 0;
 
-            pq.Add(new Aux(g.GetVertex(s), distTo[ g.GetVertex(s)]));
+            pq.Add(new Aux(g.GetVertex(s), distTo[g.GetVertex(s)]));
 
             while (pq.Count > 0)
             {
@@ -54,12 +54,12 @@ namespace Unidad3.Graph
 
         public override double DistTo(T v)
         {
-            return distTo[ graph.GetVertex(v)];
+            return distTo[graph.GetVertex(v)];
         }
 
         public override bool HasPathTo(T v)
         {
-            return distTo[ graph.GetVertex(v)] < double.PositiveInfinity;
+            return distTo[graph.GetVertex(v)] < double.PositiveInfinity;
         }
 
         public override IEnumerable<Edge> PathTo(T v)
@@ -73,7 +73,7 @@ namespace Unidad3.Graph
                 path.Push(e);
                 x = e.Other(x);
             }
-            return path.Reverse();
+            return path;
         }
 
         internal class Aux : IComparable<Aux>
