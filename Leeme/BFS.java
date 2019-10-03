@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package test;
 
 /**
  * ****************************************************************************
@@ -31,11 +30,10 @@ package test;
  *
  *****************************************************************************
  */
-import edu.princeton.cs.algs4.Graph;
-import edu.princeton.cs.algs4.In;
-import edu.princeton.cs.algs4.Queue;
-import edu.princeton.cs.algs4.Stack;
-import edu.princeton.cs.algs4.StdOut;
+
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
 
 /**
  * The {@code BFS} class represents a data type for finding shortest paths
@@ -101,22 +99,22 @@ public class BFS {
 
     // breadth-first search from a single source
     private void bfs(Graph G, int s) {
-        Queue<Integer> q = new Queue<Integer>();
+        Queue<Integer> q = new LinkedList<>();
         for (int v = 0; v < G.V(); v++) {
             distTo[v] = INFINITY;
         }
         distTo[s] = 0;
         marked[s] = true;
-        q.enqueue(s);
+        q.add(s);
         int v = s - 1;
         while (!q.isEmpty()) {
-            v = q.dequeue();
+            v = q.poll();
             for (int w : G.adj(v)) {
                 if (!marked[w]) {
                     edgeTo[w] = v;
                     distTo[w] = distTo[v] + 1;
                     marked[w] = true;
-                    q.enqueue(w);
+                    q.add(w);
                 }
             }
         }
@@ -124,20 +122,20 @@ public class BFS {
 
     // breadth-first search from multiple sources
     private void bfs(Graph G, Iterable<Integer> sources) {
-        Queue<Integer> q = new Queue<Integer>();
+        Queue<Integer> q = new LinkedList<>();
         for (int s : sources) {
             marked[s] = true;
             distTo[s] = 0;
-            q.enqueue(s);
+            q.add(s);
         }
         while (!q.isEmpty()) {
-            int v = q.dequeue();
+            int v = q.poll();
             for (int w : G.adj(v)) {
                 if (!marked[w]) {
                     edgeTo[w] = v;
                     distTo[w] = distTo[v] + 1;
                     marked[w] = true;
-                    q.enqueue(w);
+                    q.add(w);
                 }
             }
         }
@@ -196,7 +194,7 @@ public class BFS {
 
         // check that the distance of s = 0
         if (distTo[s] != 0) {
-            StdOut.println("distance of source " + s + " to itself = " + distTo[s]);
+            System.out.println("distance of source " + s + " to itself = " + distTo[s]);
             return false;
         }
 
@@ -205,15 +203,15 @@ public class BFS {
         for (int v = 0; v < G.V(); v++) {
             for (int w : G.adj(v)) {
                 if (hasPathTo(v) != hasPathTo(w)) {
-                    StdOut.println("edge " + v + "-" + w);
-                    StdOut.println("hasPathTo(" + v + ") = " + hasPathTo(v));
-                    StdOut.println("hasPathTo(" + w + ") = " + hasPathTo(w));
+                    System.out.println("edge " + v + "-" + w);
+                    System.out.println("hasPathTo(" + v + ") = " + hasPathTo(v));
+                    System.out.println("hasPathTo(" + w + ") = " + hasPathTo(w));
                     return false;
                 }
                 if (hasPathTo(v) && (distTo[w] > distTo[v] + 1)) {
-                    StdOut.println("edge " + v + "-" + w);
-                    StdOut.println("distTo[" + v + "] = " + distTo[v]);
-                    StdOut.println("distTo[" + w + "] = " + distTo[w]);
+                    System.out.println("edge " + v + "-" + w);
+                    System.out.println("distTo[" + v + "] = " + distTo[v]);
+                    System.out.println("distTo[" + w + "] = " + distTo[w]);
                     return false;
                 }
             }
@@ -227,9 +225,9 @@ public class BFS {
             }
             int v = edgeTo[w];
             if (distTo[w] != distTo[v] + 1) {
-                StdOut.println("shortest path edge " + v + "-" + w);
-                StdOut.println("distTo[" + v + "] = " + distTo[v]);
-                StdOut.println("distTo[" + w + "] = " + distTo[w]);
+                System.out.println("shortest path edge " + v + "-" + w);
+                System.out.println("distTo[" + v + "] = " + distTo[v]);
+                System.out.println("distTo[" + w + "] = " + distTo[w]);
                 return false;
             }
         }
@@ -258,36 +256,6 @@ public class BFS {
         }
     }
 
-    /**
-     * Unit tests the {@code BFS} data type.
-     *
-     * @param args the command-line arguments
-     */
-    public static void main(String[] args) {
-        In in = new In(args[0]);
-        Graph G = new Graph(in);
-        // StdOut.println(G);
-
-        int s = Integer.parseInt(args[1]);
-        BFS bfs = new BFS(G, s);
-
-        for (int v = 0; v < G.V(); v++) {
-            if (bfs.hasPathTo(v)) {
-                StdOut.printf("%d to %d (%d):  ", s, v, bfs.distTo(v));
-                for (int x : bfs.pathTo(v)) {
-                    if (x == s) {
-                        StdOut.print(x);
-                    } else {
-                        StdOut.print("-" + x);
-                    }
-                }
-                StdOut.println();
-            } else {
-                StdOut.printf("%d to %d (-):  not connected\n", s, v);
-            }
-
-        }
-    }
 
 }
 

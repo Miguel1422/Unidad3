@@ -1,10 +1,4 @@
-package test;
-
-import edu.princeton.cs.algs4.Graph;
-import edu.princeton.cs.algs4.Queue;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 
 public class Grafo<T> {
 
@@ -55,13 +49,13 @@ public class Grafo<T> {
     }
 
     public Iterable<T> bfs(T from, T to) {
-        Queue<T> s = new Queue<>();
+        Queue<T> s = new LinkedList<>();
         BFS bf = new BFS(g, ids.get(from));
         if (!bf.hasPathTo(ids.get(to))) {
             return null;
         }
         for (Integer i : bf.pathTo(ids.get(to))) {
-            s.enqueue(vertice[i]);
+            s.add(vertice[i]);
         }
         return s;
     }

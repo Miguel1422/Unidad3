@@ -1,8 +1,3 @@
-package test;
-
-import edu.princeton.cs.algs4.StdDraw;
-
-import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -268,209 +263,81 @@ public class ReadAndPrintXMLFile {
         }
 
         HashSet<Nodo> necesarios = new HashSet<Nodo>();
-        if (files) {
 
-            {
-                File nods = new File("nodes.txt");
-                FileWriter fw = new FileWriter(nods);
-                BufferedWriter bw = new BufferedWriter(fw);
+        {
+            File nods = new File("nodes.txt");
+            FileWriter fw = new FileWriter(nods);
+            BufferedWriter bw = new BufferedWriter(fw);
 
-                for (Nodo nodo : intersecciones) {
-                    necesarios.add(nodo);
-                    String res = String.format("%011d|%015f|%015f\n", nodo.id, nodo.lat, nodo.lon);
-                    //bw.write(nodo.id + "|" + nodo.lat + "|" + nodo.lon + "|" + (nodo.name == null ? "" : nodo.name) + "\n");
-                    bw.write(res);
-                }
-                bw.close();
+            for (Nodo nodo : intersecciones) {
+                necesarios.add(nodo);
+                String res = String.format("%011d|%015f|%015f\n", nodo.id, nodo.lat, nodo.lon);
+                //bw.write(nodo.id + "|" + nodo.lat + "|" + nodo.lon + "|" + (nodo.name == null ? "" : nodo.name) + "\n");
+                bw.write(res);
             }
-            {
-                File nods = new File("Ciudades.txt");
-                FileWriter fw = new FileWriter(nods);
-                BufferedWriter bw = new BufferedWriter(fw);
+            bw.close();
+        }
+        {
+            File nods = new File("Ciudades.txt");
+            FileWriter fw = new FileWriter(nods);
+            BufferedWriter bw = new BufferedWriter(fw);
 
-                for (Nodo nodo : ciudades) {
-                    String res = String.format("%011d|%015f|%015f|%s\n", nodo.id, nodo.lat, nodo.lon, nodo.name);
-                    //bw.write(nodo.id + "|" + nodo.lat + "|" + nodo.lon + "|" + (nodo.name == null ? "" : nodo.name) + "\n");
-                    bw.write(res);
-                }
-                bw.close();
+            for (Nodo nodo : ciudades) {
+                String res = String.format("%011d|%015f|%015f|%s\n", nodo.id, nodo.lat, nodo.lon, nodo.name);
+                //bw.write(nodo.id + "|" + nodo.lat + "|" + nodo.lon + "|" + (nodo.name == null ? "" : nodo.name) + "\n");
+                bw.write(res);
             }
-            {
-                HashSet<Long> ap = new HashSet<>();
-                File nods = new File("Grafo.txt");
-                FileWriter fw = new FileWriter(nods);
-                BufferedWriter bw = new BufferedWriter(fw);
+            bw.close();
+        }
+        {
+            HashSet<Long> ap = new HashSet<>();
+            File nods = new File("Grafo.txt");
+            FileWriter fw = new FileWriter(nods);
+            BufferedWriter bw = new BufferedWriter(fw);
 
-                for (int i = 0; i < g.V(); i++) {
-                    StringBuilder sb = new StringBuilder(100);
-                    Nodo ac = g.nodeAt(i);
-                    ap.add(ac.id);
-                    sb.append(String.format("%011d", ac.id));
-                    for (Nodo nodo : g.adj(ac)) {
-                        if (!ap.contains(nodo.id)) {
-                            sb.append("|").append(String.format("%011d", nodo.id));
-                        }
-
-                    }
-                    if (sb.length() > 11) {
-                        sb.append("\n");
-                        bw.write(sb.toString());
+            for (int i = 0; i < g.V(); i++) {
+                StringBuilder sb = new StringBuilder(100);
+                Nodo ac = g.nodeAt(i);
+                ap.add(ac.id);
+                sb.append(String.format("%011d", ac.id));
+                for (Nodo nodo : g.adj(ac)) {
+                    if (!ap.contains(nodo.id)) {
+                        sb.append("|").append(String.format("%011d", nodo.id));
                     }
 
                 }
-                bw.close();
-            }
-            {
-                File nods = new File("Carreteras.txt");
-                FileWriter fw = new FileWriter(nods);
-                BufferedWriter bw = new BufferedWriter(fw);
-
-                for (Carretera car : carr) {
-
-                    StringBuilder sb = new StringBuilder(100);
-
-                    sb.append(String.format("%011d", car.id));
-                    for (Nodo nodo : car.nodos) {
-                        if (necesarios.contains(nodo)) {
-                            sb.append("|").append(String.format("%011d", nodo.id));
-                        }
-
-                    }
-
-                    sb.append("|").append(car.name).append("\n");
+                if (sb.length() > 11) {
+                    sb.append("\n");
                     bw.write(sb.toString());
                 }
-                bw.close();
-            }
-            return;
-        }
-        System.out.println("Edges " + g.E());
-        System.out.println("Vertices " + g.V());
-        Random r = new Random();
-        StdDraw.setPenRadius(0.01);
-        StdDraw.setCanvasSize(450, 600);
-        StdDraw.setCanvasSize(1200, 630);
-
-        double xMin = 9999999999.0;
-        double xMax = -999999.0;
-        double yMin = 999999.0;
-        double yMax = -999999.0;
-        for (Nodo interseccione : intersecciones) {
-            xMax = Math.max(xMax, interseccione.lat);
-            xMin = Math.min(xMin, interseccione.lat);
-            yMin = Math.min(yMin, interseccione.lon);
-            yMax = Math.max(yMax, interseccione.lon);
-        }
-        StdDraw.enableDoubleBuffering();
-
-        draw(intersecciones, xMin, xMax, yMin, yMax, g);
-        StdDraw.show();
-
-        System.out.println("De " + yMin + ", " + xMin + " " + yMax + ", " + xMax);
-
-        System.out.println("Min and " + xMin + " " + yMax);
-        Nodo from = intersecciones.get(r.nextInt(intersecciones.size()));
-        Nodo to = intersecciones.get(r.nextInt(intersecciones.size()));
-        System.out.println("Nodo camino mas corto de " + from);
-        for (String calle : from.calles) {
-            System.out.print(calle + ", ");
-        }
-        System.out.println("");
-        System.out.println("Caminos mas cortos a " + to);
-        for (String calle : to.calles) {
-            System.out.print(calle + ", ");
-        }
-        System.out.println("");
-        for (int i = 0; i < 100; i++) {
-            int st = 0;
-
-            Iterable<Nodo> path = g.bfs(from, to);
-            while (path == null) {
-                from = intersecciones.get(r.nextInt(intersecciones.size()));
-                to = intersecciones.get(r.nextInt(intersecciones.size()));
-                path = g.bfs(from, to);
 
             }
-            Nodo prev = from;
-            for (Nodo bf : path) {
-
-                StdDraw.setPenRadius(0.01);
-                //19.7062143, -102.5211196
-
-                double x2 = map(xMin, xMax, 0, 1, prev.lat);
-                double y2 = map(yMin, yMax, 0, 1, prev.lon);
-
-                double x = map(xMin, xMax, 0, 1, bf.lat);
-                double y = map(yMin, yMax, 0, 1, bf.lon);
-
-                st++;
-                //StdDraw.text(y, x, st + "");
-                StdDraw.setPenColor(Color.red);
-                //StdDraw.point(y, x);
-                if (st != 1 || true) { //Evitar bug que se hace una linea grande?
-                    StdDraw.line(y, x, y2, x2);
-                }
-
-                if (st == 1) {
-                    //System.out.println("");
-                }
-
-                prev = bf;
-                if (y < 0 || y > 1) {
-                    System.err.println("Error " + y);
-                }
-                System.out.println("Coords de " + x2 + ",+ " + y2 + " a: " + x + ", " + y);
-                System.out.print((st) + ":" + bf + " == ");
-                for (String calle : bf.calles) {
-                    System.out.print(calle + ", ");
-                }
-                System.out.println();
-            }
-
-            StdDraw.setPenColor(Color.red);
-            //StdDraw.point(y, x);
-            StdDraw.setPenColor(Color.black);
-            //StdDraw.point((to.lat - 19.7004213) * 100, 1 - (-102.5153702 - to.lon) * 100);
-            from = intersecciones.get(r.nextInt(intersecciones.size()));
-            to = intersecciones.get(r.nextInt(intersecciones.size()));
-
-            StdDraw.show();
-
-            StdDraw.clear();
-
-            while (!StdDraw.mousePressed()) {
-                StdDraw.pause(100);
-            }
-            StdDraw.pause(1000);
-            draw(intersecciones, xMin, xMax, yMin, yMax, g);
-            draw(ciudades, xMin, xMax, yMin, yMax);
-
+            bw.close();
         }
+        {
+            File nods = new File("Carreteras.txt");
+            FileWriter fw = new FileWriter(nods);
+            BufferedWriter bw = new BufferedWriter(fw);
 
-        //System.out.println(g);
+            for (Carretera car : carr) {
 
-        /*for (String string : interse) {
-            System.out.print(nodes.get(Long.parseLong(string)) + "-> ");
-            for (String edge : g.adj(string)) {
-                System.out.print(nodes.get(Long.parseLong(edge)) + " ");
-            }
-            System.out.println();
-        }
+                StringBuilder sb = new StringBuilder(100);
 
-        for (Carretera carretera : carr) {
-            for (Nodo n : carretera.nodos) {
-                if (n.calles.size() > 1) {
-                    //System.out.print(n + "->");
-                    for (String calle : n.calles) {
-                        //System.out.print(calle + "|||");
+                sb.append(String.format("%011d", car.id));
+                for (Nodo nodo : car.nodos) {
+                    if (necesarios.contains(nodo)) {
+                        sb.append("|").append(String.format("%011d", nodo.id));
                     }
-                }
-            }
-            //System.out.println("");
 
+                }
+
+                sb.append("|").append(car.name).append("\n");
+                bw.write(sb.toString());
+            }
+            bw.close();
         }
-         */
-        //new Scanner(System.in).next();
+
+
     }
 
     private static boolean isDigit(char c) {
@@ -491,43 +358,6 @@ public class ReadAndPrintXMLFile {
         double res = resRange * (val - min) / range;
 
         return res + rMin;
-    }
-
-    public static void draw(ArrayList<Nodo> intersecciones, double xMin, double xMax, double yMin, double yMax, Grafo<Nodo> g) {
-        double rad = StdDraw.getPenRadius();
-        StdDraw.setPenRadius(0.002);
-        for (Nodo inte : intersecciones) {
-            double x = map(xMin, xMax, 0, 1, inte.lat);
-            double y = map(yMin, yMax, 0, 1, inte.lon);
-
-            //System.out.println(x + " Map" + y);
-            for (Nodo nodo : g.adj(inte)) {
-                //double x2 = (nodo.lat - 19.697507) * 95 + 0.1;
-                //double y2 = 1.3 - (-102.5149061 - nodo.lon) * 95;
-
-                double x2 = map(xMin, xMax, 0, 1, nodo.lat);
-                double y2 = map(yMin, yMax, 0, 1, nodo.lon);
-
-                StdDraw.line(y, x, y2, x2);
-            }
-
-        }
-        StdDraw.setPenRadius(rad);
-    }
-
-    public static void draw(ArrayList<Nodo> ciudades, double xMin, double xMax, double yMin, double yMax) {
-        double rad = StdDraw.getPenRadius();
-        StdDraw.setPenRadius(0.008);
-        Color ant = StdDraw.getPenColor();
-        StdDraw.setPenColor(Color.red);;
-        for (Nodo inte : ciudades) {
-            double x = map(xMin, xMax, 0, 1, inte.lat);
-            double y = map(yMin, yMax, 0, 1, inte.lon);
-            StdDraw.point(y, x);
-
-        }
-        StdDraw.setPenRadius(rad);
-        StdDraw.setPenColor(ant);;
     }
 
     public static long parseLon(String s) {
