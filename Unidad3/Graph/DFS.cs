@@ -27,12 +27,13 @@ namespace GPS.Graph
                 visited[i] = false;
             }
 
-            dfs(graph.GetVertex(s));
+            // dfs(graph.GetVertex(s));
+            dfs(s);
         }
 
         private bool[] visited;
         private int exploredNodes = 0;
-        private void dfs(int curr)
+        private void dfs2(int curr)
         {
             exploredNodes++;
             visited[curr] = true;
@@ -44,7 +45,29 @@ namespace GPS.Graph
                 {
                     edgeTo[other] = node;
                     distTo[other] = node.Weight + distTo[curr];
-                    dfs(node.Other(curr));
+                    dfs2(node.Other(curr));
+                }
+            }
+        }
+
+        private void dfs(T curr)
+        {
+            Stack<int> st = new Stack<int>();
+            st.Push(graph.GetVertex(curr));
+            visited[graph.GetVertex(curr)] = true;
+            while (st.Count != 0)
+            {
+                int act = st.Pop();
+                foreach (var edge in graph.Adj(act))
+                {
+                    int other = edge.Other(act);
+                    if (!visited[other])
+                    {
+                        edgeTo[other] = edge;
+                        distTo[other] = distTo[act] + edge.Weight;
+                        visited[other] = true;
+                        st.Push(other);
+                    }
                 }
             }
         }
