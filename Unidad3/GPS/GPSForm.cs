@@ -278,8 +278,8 @@ namespace Unidad3.GPS
             g.DrawImage(mapC, 0, 0, (float)mapX, (float)mapY);
             DrawPath(g);
             DrawDestination(g);
-            //DrawCities(g);
-            DrawWays(g);
+            // DrawCities(g);
+            // DrawWays(g);
         }
 
         private void doubleBufferedPanel1_MouseClick(object sender, MouseEventArgs e)

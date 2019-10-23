@@ -27,10 +27,10 @@ namespace Unidad3.GPS.Util
         private double xMax;
         private double yMin;
         private double yMax;
-        
+
         public Parser()
         {
-        
+
             xMin = double.PositiveInfinity;
             xMax = double.NegativeInfinity;
             yMin = double.PositiveInfinity;
@@ -56,6 +56,15 @@ namespace Unidad3.GPS.Util
                 xMin = Math.Min(xMin, lon);
                 xMax = Math.Max(xMax, lon);
             }
+
+            // Coordenadas del mapa en caso de haber descargado una imagen
+            // ya que en algunos casos el mapa descargado viene con nodos
+            // fuera de los limites establecidos
+            xMin = -102.8018;
+            xMax= -100.6073;
+            yMin = 18.9505;
+            yMax = 20.4476;
+
             nodeLines = null;
             GC.Collect();
 
@@ -118,7 +127,7 @@ namespace Unidad3.GPS.Util
             GC.Collect();
 
         }
-        
+
         public List<Node> Nodes
         {
             get { return nodes; }
